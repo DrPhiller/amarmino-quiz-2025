@@ -2,233 +2,364 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Amarmino Girls Quiz 2025</title>
   <style>
     body {
-      font-family: sans-serif;
-      background-color: #f4f4f4;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #fff0f5);
+      color: #333;
+      margin: 0; padding: 0;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 2rem;
+      min-height: 100vh;
     }
-    .container {
-      background: white;
-      padding: 2rem;
-      border-radius: 10px;
-      max-width: 500px;
-      width: 100%;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 1rem;
-    }
-    .question {
-      margin-bottom: 1rem;
-    }
-    .answers button, .controls button {
-      display: block;
-      width: 100%;
-      margin: 0.5rem 0;
-      padding: 0.5rem;
-      background-color: #007bff;
+    header {
+      background: #ff66a3;
       color: white;
+      padding: 1rem;
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      box-shadow: 0 4px 6px rgba(255, 102, 163, 0.4);
+    }
+    main {
+      flex: 1;
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #ff66a380;
+      padding: 2rem;
+    }
+    button {
+      background-color: #ff66a3;
       border: none;
-      border-radius: 5px;
+      color: white;
+      padding: 0.7rem 1.3rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #e0558a;
+    }
+    .hidden { display: none; }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.8rem;
       cursor: pointer;
     }
-    .answers button:hover, .controls button:hover {
-      background-color: #0056b3;
+    .options input[type="radio"] {
+      margin-right: 0.5rem;
+      cursor: pointer;
     }
-    #start-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .controls {
+    .nav-buttons {
+      margin-top: 1.5rem;
       display: flex;
       justify-content: space-between;
-      gap: 1rem;
+    }
+    .category-btn {
+      display: block;
+      width: 100%;
+      margin: 0.3rem 0;
+      font-size: 1.1rem;
+      text-align: left;
+      padding: 0.8rem 1rem;
+      border-radius: 6px;
+      border: 2px solid #ff66a3;
+      background: white;
+      color: #ff66a3;
+      font-weight: 600;
+    }
+    .category-btn:hover {
+      background-color: #ff66a3;
+      color: white;
+    }
+    .result {
+      font-size: 1.3rem;
       margin-top: 1rem;
     }
     .correct-answer {
       color: green;
-      margin-top: 0.5rem;
+      font-weight: 700;
+    }
+    .wrong-answer {
+      color: red;
+      font-weight: 700;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: #aaa;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="start-container">
-    <h1>Amarmino Girls Quiz 2025</h1>
-    <h2>Velkommen til quizzen!</h2>
-    <input type="text" id="name" placeholder="Indtast dit navn" />
-    <button onclick="startQuiz()">Start quiz</button>
-  </div>
 
-  <div class="container" id="quiz-container" style="display: none;">
-    <h3 id="greeting"></h3>
-    <div class="question" id="question"></div>
-    <div class="answers" id="answers"></div>
-    <div class="controls">
-      <button onclick="prevQuestion()">Tilbage</button>
+<header>🎀 Amarmino Girls Quiz 2025 🎀</header>
+
+<main>
+
+  <!-- STARTSKÆRM -->
+  <div id="start-screen">
+    <h2>Velkommen! Indtast dit navn og vælg en quizkategori 💖</h2>
+    <input type="text" id="username" placeholder="Dit navn her" />
+    <div id="category-list" style="margin-top: 1rem;">
+      <!-- Kategorier vises her via JavaScript -->
     </div>
+    <button id="start-btn" disabled>Start quiz</button>
   </div>
 
-  <div class="container" id="result-container" style="display: none;">
-    <h2>Resultat</h2>
-    <p id="result-text"></p>
-    <div id="answer-review"></div>
-    <button onclick="restartQuiz()">Start forfra</button>
+  <!-- QUIZ SKÆRM -->
+  <div id="quiz-screen" class="hidden">
+    <div><strong>Bruger:</strong> <span id="display-username"></span></div>
+    <div><strong>Kategori:</strong> <span id="display-category"></span></div>
+    <div class="question" id="question-text"></div>
+    <form id="options-form" class="options"></form>
+
+    <div class="nav-buttons">
+      <button id="prev-btn">⏮️ Forrige</button>
+      <button id="next-btn" disabled>Næste ⏭️</button>
+    </div>
+    <button id="restart-btn" style="margin-top:1rem;">🔄 Start forfra</button>
   </div>
+  <!-- RESULTAT SKÆRM -->
+  <div id="result-screen" class="hidden">
+    <h2>✨ Resultat ✨</h2>
+    <div id="score-output"></div>
+    <div id="detailed-results" style="margin-top: 1rem;"></div>
+    <button id="restart-btn-2">🔁 Prøv igen</button>
+  </div>
+</main>
 
-  <script>
-    const questions = [
-      {
-        question: "Hvad er hovedstaden i Danmark?",
-        answers: ["Aarhus", "København", "Odense", "Aalborg"],
-        correct: 1
-      },
-      {
-        question: "Hvilket år startede Anden Verdenskrig?",
-        answers: ["1937", "1939", "1941", "1945"],
-        correct: 1
-      },
-      {
-        question: "Hvilket dyr er kendt som 'Kongen af junglen'?",
-        answers: ["Elefant", "Tiger", "Løve", "Leopard"],
-        correct: 2
-      },
-      {
-        question: "Hvad er 7 + 5?",
-        answers: ["10", "11", "12", "13"],
-        correct: 2
-      },
-      {
-        question: "Hvilken farve får man ved at blande blå og gul?",
-        answers: ["Grøn", "Lilla", "Orange", "Brun"],
-        correct: 0
-      },
-      {
-        question: "Hvad hedder verdens største hav?",
-        answers: ["Atlanterhavet", "Stillehavet", "Det Indiske Ocean", "Nordishavet"],
-        correct: 1
-      },
-      {
-        question: "Hvem skrev 'Romeo og Julie'?",
-        answers: ["H.C. Andersen", "William Shakespeare", "Charles Dickens", "J.K. Rowling"],
-        correct: 1
-      },
-      {
-        question: "Hvilken planet er tættest på solen?",
-        answers: ["Venus", "Jorden", "Mars", "Merkur"],
-        correct: 3
-      },
-      {
-        question: "Hvad kaldes en firkant med fire lige lange sider og fire rette vinkler?",
-        answers: ["Firkant", "Rektangel", "Kvadrat", "Trapez"],
-        correct: 2
-      },
-      {
-        question: "Hvilket sprog tales i Brasilien?",
-        answers: ["Spansk", "Portugisisk", "Fransk", "Engelsk"],
-        correct: 1
-      }
-    ];
+<footer>
+  &copy; 2025 Amarmino Girls ✨ – Lavet med 💕 og glitter
+</footer>
 
-    let currentQuestion = 0;
-    let score = 0;
-    let userName = "";
-    let userAnswers = new Array(questions.length).fill(null);
+<script>
+  const categories = {
+    "🎶 Musik fra 90'erne": [...],
+    "🧂 Spice Girls": [...],
+    "📺 TV & serier 00'erne": [...],
+    "💅 Skønhed & mode": [...],
+    "💖 Romantik & dating": [...],
+    "🎥 Filmklassikere": [...],
+    "👩‍👧 Mor-liv & børn": [...],
+    "🧠 Hjernevridere": [...],
+    "🌍 Verden & rejser": [...],
+    "🍷 Vin & venindehygge": [...]
+  };
 
-    function startQuiz() {
-      userName = document.getElementById("name").value;
-      if (!userName) {
-        alert("Indtast venligst dit navn for at starte quizzen.");
-        return;
-      }
-      document.getElementById("start-container").style.display = "none";
-      document.getElementById("quiz-container").style.display = "block";
-      document.getElementById("greeting").innerText = `Held og lykke, ${userName}!`;
+  let currentCategory = "";
+  let currentQuiz = [];
+  let currentQuestionIndex = 0;
+  let userAnswers = [];
+  let username = "";
+
+  const startScreen = document.getElementById("start-screen");
+  const quizScreen = document.getElementById("quiz-screen");
+  const resultScreen = document.getElementById("result-screen");
+  const categoryList = document.getElementById("category-list");
+  const startBtn = document.getElementById("start-btn");
+  const questionText = document.getElementById("question-text");
+  const optionsForm = document.getElementById("options-form");
+  const nextBtn = document.getElementById("next-btn");
+  const prevBtn = document.getElementById("prev-btn");
+  const restartBtn = document.getElementById("restart-btn");
+  const restartBtn2 = document.getElementById("restart-btn-2");
+  const scoreOutput = document.getElementById("score-output");
+  const detailedResults = document.getElementById("detailed-results");
+
+  const displayUsername = document.getElementById("display-username");
+  const displayCategory = document.getElementById("display-category");
+
+  const usernameInput = document.getElementById("username");
+
+  // Aktiver start-knap hvis navn og kategori er valgt
+  usernameInput.addEventListener("input", () => {
+    if (usernameInput.value && currentCategory) {
+      startBtn.disabled = false;
+    }
+  });
+
+  // Vis kategori-knapper
+  for (const cat in categories) {
+    const btn = document.createElement("button");
+    btn.textContent = cat;
+    btn.className = "category-btn";
+    btn.addEventListener("click", () => {
+      currentCategory = cat;
+      if (usernameInput.value) startBtn.disabled = false;
+      document.querySelectorAll(".category-btn").forEach(b => b.style.background = "white");
+      btn.style.background = "#ff66a3";
+      btn.style.color = "white";
+    });
+    categoryList.appendChild(btn);
+  }
+
+  startBtn.addEventListener("click", () => {
+    username = usernameInput.value.trim();
+    if (!username || !currentCategory) return;
+
+    currentQuiz = categories[currentCategory];
+    currentQuestionIndex = 0;
+    userAnswers = new Array(currentQuiz.length).fill(null);
+
+    startScreen.classList.add("hidden");
+    quizScreen.classList.remove("hidden");
+    displayUsername.textContent = username;
+    displayCategory.textContent = currentCategory;
+    showQuestion();
+  });
+  categories["💅 Skønhed & mode"] = [
+    { q: "Hvilken makeupartikel bruger man til øjenvipper?", a: ["Eyeliner", "Mascara", "Foundation", "Blush"], correct: 1 },
+    { q: "Hvilket mærke er kendt for 'Daisy'-parfumen?", a: ["Gucci", "Dior", "Marc Jacobs", "Chanel"], correct: 2 },
+    { q: "Hvad bruges en beauty blender til?", a: ["Øjenskygge", "Læbestift", "Foundation", "Neglelak"], correct: 2 },
+    { q: "Hvad er stiletter?", a: ["Tasker", "Sko", "Smykker", "Jakker"], correct: 1 },
+    { q: "Hvilket modehus har initialerne LV?", a: ["Louis Vuitton", "Lars Vaaben", "Lilly Vogue", "Laura Vida"], correct: 0 },
+    { q: "Hvad kaldes øjenbryn der er fyldige og definerede?", a: ["Natural brows", "Bushy brows", "HD brows", "Feathered brows"], correct: 2 },
+    { q: "Hvilken hårfarve blev populær som 'ombré'?", a: ["Sort til rød", "Mørk til lys", "Blond til brun", "Rød til sort"], correct: 1 },
+    { q: "Hvad er 'contouring'?", a: ["En frisur", "Makeup-teknik", "Et smykke", "En parfume"], correct: 1 },
+    { q: "Hvilket mærke står bag Naked øjenskyggepaletter?", a: ["Urban Decay", "Maybelline", "NYX", "Revlon"], correct: 0 },
+    { q: "Hvilket negleprodukt hærder under UV-lys?", a: ["Almindelig lak", "Gellak", "Mat lak", "Top coat"], correct: 1 },
+  ];
+
+  categories["💖 Romantik & dating"] = [
+    { q: "Hvad betyder 'crush'?", a: ["Forelskelse", "Breakup", "Venskab", "Skænderi"], correct: 0 },
+    { q: "Hvad er Tinder?", a: ["Datingapp", "Spil", "Shopping side", "Socialt netværk"], correct: 0 },
+    { q: "Hvad kaldes en romantisk middag med to personer?", a: ["Meetup", "Date", "Hangout", "Event"], correct: 1 },
+    { q: "Hvilket symbol står for kærlighed?", a: ["Stjerne", "Hjerte", "Kryds", "Blomst"], correct: 1 },
+    { q: "Hvad er 'ghosting'?", a: ["Når nogen kontakter dig hele tiden", "Når nogen ignorerer dig uden forklaring", "Når nogen skriver kærlighedsbreve", "Når nogen frier"], correct: 1 },
+    { q: "Hvilken dag er Valentinsdag?", a: ["1. februar", "14. februar", "1. marts", "24. december"], correct: 1 },
+    { q: "Hvad er en 'soulmate'?", a: ["Ven", "Modstander", "Skæbnepartner", "Kollega"], correct: 2 },
+    { q: "Hvad hedder filmen med Ryan Gosling og regnvejrscenen?", a: ["The Notebook", "Titanic", "Dear John", "La La Land"], correct: 0 },
+    { q: "Hvad kaldes små kærestegaver?", a: ["Gaverier", "Snacks", "Kærlighedsting", "Kærlighedsgaver"], correct: 3 },
+    { q: "Hvad betyder at 'flirte'?", a: ["Skændes", "Drille", "Vise romantisk interesse", "Sove"], correct: 2 },
+  ];
+
+  categories["🎥 Filmklassikere"] = [
+    { q: "Hvem siger 'I'm the king of the world!'?", a: ["Forrest Gump", "Jack fra Titanic", "Harry Potter", "Neo fra Matrix"], correct: 1 },
+    { q: "Hvem spiller hovedrollen i 'Pretty Woman'?", a: ["Sandra Bullock", "Meg Ryan", "Julia Roberts", "Cameron Diaz"], correct: 2 },
+    { q: "Hvad hedder musen i Disney-filmen fra 90’erne?", a: ["Jerry", "Stuart", "Mickey", "Remy"], correct: 2 },
+    { q: "Hvad drikker Bridget Jones for meget af?", a: ["Øl", "Vin", "Cider", "Gin"], correct: 1 },
+    { q: "Hvilken film har sangen 'My Heart Will Go On'?", a: ["Ghost", "Pretty Woman", "Titanic", "Notting Hill"], correct: 2 },
+    { q: "Hvem spiller Elle Woods i 'Legally Blonde'?", a: ["Reese Witherspoon", "Drew Barrymore", "Kate Hudson", "Cameron Diaz"], correct: 0 },
+    { q: "Hvad hedder heksen i 'Troldmanden fra Oz'?", a: ["Glinda", "Elphaba", "Maleficent", "Wicked Witch"], correct: 3 },
+    { q: "Hvilket dyr er hovedperson i 'Babe'?", a: ["Gris", "Hund", "Ko", "Ged"], correct: 0 },
+    { q: "Hvad er hovedtemaet i 'Love Actually'?", a: ["Venskab", "Jul og kærlighed", "Sorg", "Skilsmisse"], correct: 1 },
+    { q: "Hvilken skuespiller er kendt for klodsethed i 00'erne?", a: ["Sandra Bullock", "Renée Zellweger", "Mila Kunis", "Anne Hathaway"], correct: 1 },
+  ];
+
+  categories["👩‍👧 Mor-liv & børn"] = [
+    { q: "Hvornår får børn oftest deres første tand?", a: ["1 måned", "6 måneder", "12 måneder", "18 måneder"], correct: 1 },
+    { q: "Hvilket mærke laver bleer?", a: ["Pampers", "H&M", "Nestlé", "Fisher-Price"], correct: 0 },
+    { q: "Hvad kaldes barsel i Danmark?", a: ["Mødreuger", "Forældreorlov", "Børnetid", "Vuggestart"], correct: 1 },
+    { q: "Hvornår starter de fleste børn i skole?", a: ["4 år", "5 år", "6 år", "7 år"], correct: 2 },
+    { q: "Hvad kalder man en sut i Danmark?", a: ["Tudse", "Smok", "Sut", "Bap"], correct: 2 },
+    { q: "Hvad hedder kendt YouTube-kanal for børn?", a: ["Cocomelon", "Netflix Kids", "Kidflix", "ZigZag"], correct: 0 },
+    { q: "Hvilken type drik undgår babyer før 1 år?", a: ["Mælk", "Vand", "Juice", "Honning"], correct: 3 },
+    { q: "Hvad er en 'blefri' periode kaldet?", a: ["Clean days", "Tissepause", "Pottealder", "Ren uge"], correct: 2 },
+    { q: "Hvad kaldes babys første skridt ofte?", a: ["Baby Steps", "Guldtråd", "Milepæl", "Minitrin"], correct: 3 },
+    { q: "Hvad står MFR for?", a: ["Mælk-Fri-Ration", "Mor-Far-Ret", "Mæslinger-Fåresyge-Røde hunde", "Mors Første Reaktion"], correct: 2 },
+  ];
+
+  categories["🧠 Hjernevridere"] = [
+    { q: "Hvad er 9 + 10?", a: ["18", "19", "20", "21"], correct: 1 },
+    { q: "Hvilket tal kommer næste i rækken: 2, 4, 6, 8, ...?", a: ["9", "10", "12", "11"], correct: 1 },
+    { q: "Hvilket ord er en palindrom?", a: ["Racer", "Hest", "Stol", "Gulv"], correct: 0 },
+    { q: "Hvad er hovedstaden i Italien?", a: ["Paris", "Madrid", "Rom", "Berlin"], correct: 2 },
+    { q: "Hvilket dyr siger 'muh'?", a: ["Ged", "Ko", "Hund", "Hest"], correct: 1 },
+    { q: "Hvad er 3 x 5?", a: ["15", "10", "8", "20"], correct: 0 },
+    { q: "Hvor mange ben har en edderkop?", a: ["6", "8", "10", "12"], correct: 1 },
+    { q: "Hvad er modsatte af 'dag'?", a: ["Morgen", "Sol", "Nat", "Lys"], correct: 2 },
+    { q: "Hvad kommer efter Torsdag?", a: ["Onsdag", "Fredag", "Lørdag", "Mandag"], correct: 1 },
+    { q: "Hvor mange fingre har man i alt (uden tommelfingre)?", a: ["8", "10", "6", "4"], correct: 0 },
+  ];
+
+  categories["🌍 Verden & rejser"] = [
+    { q: "Hvad er hovedstaden i Frankrig?", a: ["Madrid", "London", "Berlin", "Paris"], correct: 3 },
+    { q: "Hvilket kontinent er Egypten i?", a: ["Asien", "Afrika", "Europa", "Sydamerika"], correct: 1 },
+    { q: "Hvilket land er kendt for pizza?", a: ["Grækenland", "Frankrig", "Italien", "Tyskland"], correct: 2 },
+    { q: "Hvad hedder øgruppen øst for Afrika?", a: ["Canary Islands", "Bali", "Maldiverne", "Seychellerne"], correct: 3 },
+    { q: "Hvilket land har Mount Fuji?", a: ["Kina", "Thailand", "Japan", "Vietnam"], correct: 2 },
+    { q: "Hvor ligger Eiffeltårnet?", a: ["New York", "Paris", "Berlin", "Rom"], correct: 1 },
+    { q: "Hvilken valuta bruger man i Sverige?", a: ["Euro", "Svenske kroner", "Dollar", "Mark"], correct: 1 },
+    { q: "Hvad kalder man en ferie hvor man bor hjemme?", a: ["Staycation", "Home trip", "Lokal rejse", "Sleepover"], correct: 0 },
+    { q: "Hvilket land har klokketårnet 'Big Ben'?", a: ["USA", "Skotland", "England", "Irland"], correct: 2 },
+    { q: "Hvad er Danmarks nationalret?", a: ["Pizza", "Stegt flæsk med persillesovs", "Frikadeller", "Sushi"], correct: 1 },
+  ];
+  function showQuestion() {
+    const q = currentQuiz[currentQuestionIndex];
+    questionText.textContent = `Spørgsmål ${currentQuestionIndex + 1}/${currentQuiz.length}: ${q.q}`;
+    optionsForm.innerHTML = "";
+
+    q.a.forEach((option, i) => {
+      const label = document.createElement("label");
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "answer";
+      input.value = i;
+      if (userAnswers[currentQuestionIndex] === i) input.checked = true;
+      label.appendChild(input);
+      label.append(` ${option}`);
+      optionsForm.appendChild(label);
+      optionsForm.append(document.createElement("br"));
+    });
+
+    prevBtn.style.display = currentQuestionIndex > 0 ? "inline-block" : "none";
+    nextBtn.textContent = currentQuestionIndex < currentQuiz.length - 1 ? "Næste" : "Afslut";
+  }
+
+  nextBtn.addEventListener("click", () => {
+    const selected = optionsForm.querySelector("input[name='answer']:checked");
+    if (selected) userAnswers[currentQuestionIndex] = Number(selected.value);
+
+    if (currentQuestionIndex < currentQuiz.length - 1) {
+      currentQuestionIndex++;
+      showQuestion();
+    } else {
+      showResults();
+    }
+  });
+
+  prevBtn.addEventListener("click", () => {
+    if (currentQuestionIndex > 0) {
+      currentQuestionIndex--;
       showQuestion();
     }
+  });
 
-    function showQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById("question").innerText = `Spørgsmål ${currentQuestion + 1}: ${q.question}`;
-      const answersDiv = document.getElementById("answers");
-      answersDiv.innerHTML = "";
-      q.answers.forEach((answer, i) => {
-        const btn = document.createElement("button");
-        btn.innerText = answer;
-        btn.onclick = () => selectAnswer(i);
-        if (userAnswers[currentQuestion] === i) {
-          btn.style.backgroundColor = '#0056b3';
-        }
-        answersDiv.appendChild(btn);
-      });
-    }
+  function showResults() {
+    quizScreen.classList.add("hidden");
+    resultScreen.classList.remove("hidden");
 
-    function selectAnswer(selected) {
-      if (userAnswers[currentQuestion] === null && selected === questions[currentQuestion].correct) {
-        score++;
-      } else if (
-        userAnswers[currentQuestion] !== null &&
-        userAnswers[currentQuestion] === questions[currentQuestion].correct &&
-        selected !== questions[currentQuestion].correct
-      ) {
-        score--;
-      } else if (
-        userAnswers[currentQuestion] !== null &&
-        userAnswers[currentQuestion] !== questions[currentQuestion].correct &&
-        selected === questions[currentQuestion].correct
-      ) {
-        score++;
-      }
-      userAnswers[currentQuestion] = selected;
-      currentQuestion++;
-      if (currentQuestion < questions.length) {
-        showQuestion();
-      } else {
-        showResult();
-      }
-    }
+    let correctCount = 0;
+    detailedResults.innerHTML = "";
 
-    function prevQuestion() {
-      if (currentQuestion > 0) {
-        currentQuestion--;
-        showQuestion();
-      }
-    }
+    currentQuiz.forEach((q, i) => {
+      const userAnswer = userAnswers[i];
+      const correct = q.correct;
+      if (userAnswer === correct) correctCount++;
 
-    function showResult() {
-      document.getElementById("quiz-container").style.display = "none";
-      document.getElementById("result-container").style.display = "block";
-      document.getElementById("result-text").innerText = `${userName}, du fik ${score} ud af ${questions.length} rigtige!`;
+      const resultText = document.createElement("p");
+      resultText.innerHTML = `<strong>${q.q}</strong><br>Dit svar: ${q.a[userAnswer] || "Intet valgt"}<br>Korrekt svar: <span style="color:green">${q.a[correct]}</span><br>`;
+      detailedResults.appendChild(resultText);
+    });
 
-      const reviewDiv = document.getElementById("answer-review");
-      reviewDiv.innerHTML = "<h3>Rigtige svar:</h3>";
-      questions.forEach((q, index) => {
-        const userAnswer = userAnswers[index];
-        const correctAnswer = q.answers[q.correct];
-        const userAnswerText = userAnswer !== null ? q.answers[userAnswer] : "Intet svar";
-        const resultItem = document.createElement("div");
-        resultItem.innerHTML = `
-          <strong>Spørgsmål ${index + 1}:</strong> ${q.question}<br/>
-          Dit svar: ${userAnswerText}<br/>
-          <span class="correct-answer">Rigtigt svar: ${correctAnswer}</span><br/><br/>
-        `;
-        reviewDiv.appendChild(resultItem);
-      });
-    }
+    scoreOutput.innerHTML = `${username}, du fik <strong>${correctCount}/${currentQuiz.length}</strong> rigtige! 🎉`;
+  }
 
-    function restartQuiz() {
-      currentQuestion = 0;
-      score = 0;
-      userAnswers = new Array(questions.length).fill(null);
-      document.getElementById("name").value = "";
-      document.getElementById("start-container").style.display = "block";
-      document.getElementById("quiz-container").style.display = "none";
-      document.getElementById("result-container").style.display = "none";
-    }
-  </script>
+  restartBtn.addEventListener("click", () => location.reload());
+  restartBtn2.addEventListener("click", () => location.reload());
+</script>
+
 </body>
 </html>
