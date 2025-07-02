@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amarmino Girls Quiz 2025</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+    .question {
+      margin-bottom: 1rem;
+    }
+    .answers button, .controls button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .answers button:hover, .controls button:hover {
+      background-color: #0056b3;
+    }
+    #start-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .correct-answer {
+      color: green;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="start-container">
+    <h1>Amarmino Girls Quiz 2025</h1>
+    <h2>Velkommen til quizzen!</h2>
+    <input type="text" id="name" placeholder="Indtast dit navn" />
+    <button onclick="startQuiz()">Start quiz</button>
+  </div>
+
+  <div class="container" id="quiz-container" style="display: none;">
+    <h3 id="greeting"></h3>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="controls">
+      <button onclick="prevQuestion()">Tilbage</button>
+    </div>
+  </div>
+
+  <div class="container" id="result-container" style="display: none;">
+    <h2>Resultat</h2>
+    <p id="result-text"></p>
+    <div id="answer-review"></div>
+    <button onclick="restartQuiz()">Start forfra</button>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Hvad er hovedstaden i Danmark?",
+        answers: ["Aarhus", "København", "Odense", "Aalborg"],
+        correct: 1
+      },
+      {
+        question: "Hvilket år startede Anden Verdenskrig?",
+        answers: ["1937", "1939", "1941", "1945"],
+        correct: 1
+      },
+      {
+        question: "Hvilket dyr er kendt som 'Kongen af junglen'?",
+        answers: ["Elefant", "Tiger", "Løve", "Leopard"],
+        correct: 2
+      },
+      {
+        question: "Hvad er 7 + 5?",
+        answers: ["10", "11", "12", "13"],
+        correct: 2
+      },
+      {
+        question: "Hvilken farve får man ved at blande blå og gul?",
+        answers: ["Grøn", "Lilla", "Orange", "Brun"],
+        correct: 0
+      },
+      {
+        question: "Hvad hedder verdens største hav?",
+        answers: ["Atlanterhavet", "Stillehavet", "Det Indiske Ocean", "Nordishavet"],
+        correct: 1
+      },
+      {
+        question: "Hvem skrev 'Romeo og Julie'?",
+        answers: ["H.C. Andersen", "William Shakespeare", "Charles Dickens", "J.K. Rowling"],
+        correct: 1
+      },
+      {
+        question: "Hvilken planet er tættest på solen?",
+        answers: ["Venus", "Jorden", "Mars", "Merkur"],
+        correct: 3
+      },
+      {
+        question: "Hvad kaldes en firkant med fire lige lange sider og fire rette vinkler?",
+        answers: ["Firkant", "Rektangel", "Kvadrat", "Trapez"],
+        correct: 2
+      },
+      {
+        question: "Hvilket sprog tales i Brasilien?",
+        answers: ["Spansk", "Portugisisk", "Fransk", "Engelsk"],
+        correct: 1
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let userName = "";
+    let userAnswers = new Array(questions.length).fill(null);
+
+    function startQuiz() {
+      userName = document.getElementById("name").value;
+      if (!userName) {
+        alert("Indtast venligst dit navn for at starte quizzen.");
+        return;
+      }
+      document.getElementById("start-container").style.display = "none";
+      document.getElementById("quiz-container").style.display = "block";
+      document.getElementById("greeting").innerText = `Held og lykke, ${userName}!`;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question").innerText = `Spørgsmål ${currentQuestion + 1}: ${q.question}`;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+      q.answers.forEach((answer, i) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => selectAnswer(i);
+        if (userAnswers[currentQuestion] === i) {
+          btn.style.backgroundColor = '#0056b3';
+        }
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function selectAnswer(selected) {
+      if (userAnswers[currentQuestion] === null && selected === questions[currentQuestion].correct) {
+        score++;
+      } else if (
+        userAnswers[currentQuestion] !== null &&
+        userAnswers[currentQuestion] === questions[currentQuestion].correct &&
+        selected !== questions[currentQuestion].correct
+      ) {
+        score--;
+      } else if (
+        userAnswers[currentQuestion] !== null &&
+        userAnswers[currentQuestion] !== questions[currentQuestion].correct &&
+        selected === questions[currentQuestion].correct
+      ) {
+        score++;
+      }
+      userAnswers[currentQuestion] = selected;
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        showQuestion();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("quiz-container").style.display = "none";
+      document.getElementById("result-container").style.display = "block";
+      document.getElementById("result-text").innerText = `${userName}, du fik ${score} ud af ${questions.length} rigtige!`;
+
+      const reviewDiv = document.getElementById("answer-review");
+      reviewDiv.innerHTML = "<h3>Rigtige svar:</h3>";
+      questions.forEach((q, index) => {
+        const userAnswer = userAnswers[index];
+        const correctAnswer = q.answers[q.correct];
+        const userAnswerText = userAnswer !== null ? q.answers[userAnswer] : "Intet svar";
+        const resultItem = document.createElement("div");
+        resultItem.innerHTML = `
+          <strong>Spørgsmål ${index + 1}:</strong> ${q.question}<br/>
+          Dit svar: ${userAnswerText}<br/>
+          <span class="correct-answer">Rigtigt svar: ${correctAnswer}</span><br/><br/>
+        `;
+        reviewDiv.appendChild(resultItem);
+      });
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      userAnswers = new Array(questions.length).fill(null);
+      document.getElementById("name").value = "";
+      document.getElementById("start-container").style.display = "block";
+      document.getElementById("quiz-container").style.display = "none";
+      document.getElementById("result-container").style.display = "none";
+    }
+  </script>
+</body>
+</html>
