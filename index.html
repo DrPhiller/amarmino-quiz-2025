@@ -177,10 +177,8 @@
   const restartBtn2 = document.getElementById("restart-btn-2");
   const scoreOutput = document.getElementById("score-output");
   const detailedResults = document.getElementById("detailed-results");
-
   const displayUsername = document.getElementById("display-username");
   const displayCategory = document.getElementById("display-category");
-
   const usernameInput = document.getElementById("username");
 
   // Aktiver start-knap hvis navn og kategori er valgt
@@ -204,7 +202,6 @@
     });
     categoryList.appendChild(btn);
   }
-
   startBtn.addEventListener("click", () => {
     username = usernameInput.value.trim();
     if (!username || !currentCategory) return;
@@ -231,7 +228,6 @@
     { q: "Hvilket mærke står bag Naked øjenskyggepaletter?", a: ["Urban Decay", "Maybelline", "NYX", "Revlon"], correct: 0 },
     { q: "Hvilket negleprodukt hærder under UV-lys?", a: ["Almindelig lak", "Gellak", "Mat lak", "Top coat"], correct: 1 },
   ];
-
   categories["💖 Romantik & dating"] = [
     { q: "Hvad betyder 'crush'?", a: ["Forelskelse", "Breakup", "Venskab", "Skænderi"], correct: 0 },
     { q: "Hvad er Tinder?", a: ["Datingapp", "Spil", "Shopping side", "Socialt netværk"], correct: 0 },
