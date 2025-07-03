@@ -209,27 +209,41 @@
     }
 
     function submitQuiz() {
-      saveAnswer();
-      let score = 0;
-      questions[currentCategory].forEach((q, i) => {
-        if (userAnswers[i] === q.correct) score++;
-      });
+  saveAnswer();
+  let score = 0;
+  let detailsHTML = '';
 
-      let resultText = "";
-      if (score <= 3) resultText = "😅 Amagerbrogades Amatør";
-      else if (score <= 6) resultText = "💁 Islands Brygge Babe";
-      else if (score <= 9) resultText = "👑 Kastrup Queen";
-      else resultText = "🎉 Ultimate Amar Diva 💅";
+  questions[currentCategory].forEach((q, i) => {
+    const userAnswer = userAnswers[i];
+    const correctAnswer = q.correct;
+    const isCorrect = userAnswer === correctAnswer;
+    if (isCorrect) score++;
 
-      document.getElementById("quiz-container").classList.add("hidden");
-      const resultDiv = document.getElementById("result-screen");
-      resultDiv.classList.remove("hidden");
-      resultDiv.innerHTML = `
-        <h2>Resultat</h2>
-        <p>Du fik <strong>${score}/10</strong> rigtige!</p>
-        <h3>${resultText}</h3>
-        <button class="category-btn" onclick="location.reload()">🔁 Prøv igen</button>
-      `;
+    detailsHTML += `
+      <div style="margin-bottom: 1rem; background: #fff0f5; padding: 0.5rem 1rem; border-radius: 0.8rem; box-shadow: 0 0 5px rgba(214,51,132,0.3);">
+        <strong>Spørgsmål ${i + 1}:</strong> ${q.question} <br/>
+        Dit svar: ${userAnswer !== null ? q.answers[userAnswer] : '<em>Ikke besvaret</em>'} ${isCorrect ? '✅' : '❌'}<br/>
+        Korrekt svar: ${q.answers[correctAnswer]}
+      </div>
+    `;
+  });
+
+  let resultText = "";
+  if (score <= 3) resultText = "😅 Amagerbrogades Amatør";
+  else if (score <= 6) resultText = "💁 Islands Brygge Babe";
+  else if (score <= 9) resultText = "👑 Kastrup Queen";
+  else resultText = "🎉 Ultimate Amar Diva 💅";
+
+  document.getElementById("quiz-container").classList.add("hidden");
+  const resultDiv = document.getElementById("result-screen");
+  resultDiv.classList.remove("hidden");
+  resultDiv.innerHTML = `
+    <h2>Resultat</h2>
+    <p>Du fik <strong>${score}/10</strong> rigtige!</p>
+    <h3>${resultText}</h3>
+    <div>${detailsHTML}</div>
+    <button class="category-btn" onclick="location.reload()">🔁 Prøv igen</button>
+  `;
     }
   </script>
 </body>
