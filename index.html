@@ -2,14 +2,14 @@
 <html lang="da">
 <head>
   <meta charset="UTF-8">
-  <title>Venindequiz</title>
+  <title>Amarmino-Girls Quiz</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      max-width: 600px;
+      max-width: 700px;
       margin: 2rem auto;
       padding: 1rem;
-      background: #fff8f0;
+      background: #fff0f5;
       color: #333;
     }
     h1, h2 {
@@ -28,28 +28,42 @@
     .answers button {
       margin: 0.3rem;
     }
-    .result {
-      font-weight: bold;
-      text-align: center;
+    .summary {
+      margin-top: 2rem;
+      background: #fdfdfd;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
     }
   </style>
 </head>
 <body>
 
-  <h1>Venindequiz 💃</h1>
+  <h1>Amarmino-Girls Quiz 💅🍸</h1>
   <h2>Vælg en kategori</h2>
   <div id="categoryButtons"></div>
+
   <div class="question" id="questionContainer" style="display:none;">
     <h2 id="questionText"></h2>
     <div class="answers" id="answerButtons"></div>
-    <div class="result" id="resultText"></div>
-    <button onclick="nextQuestion()">Næste spørgsmål</button>
+    <button id="nextButton" style="display:none;" onclick="nextQuestion()">Næste spørgsmål</button>
+  </div>
+
+  <div class="summary" id="summaryContainer" style="display:none;">
+    <h2>Resultatoversigt</h2>
+    <div id="summaryContent"></div>
+    <button onclick="location.reload()">Start forfra</button>
   </div>
 
   <script>
     const categories = {};
 
-    // 🎶 Musik fra 90'erne
     categories["🎶 Musik fra 90'erne"] = [
       {
         q: "Hvem sang hittet '...Baby One More Time'?",
@@ -68,7 +82,6 @@
       }
     ];
 
-    // 🧂 Spice Girls
     categories["🧂 Spice Girls"] = [
       {
         q: "Hvad var Mel B's Spice-navn?",
@@ -87,7 +100,6 @@
       }
     ];
 
-    // 📺 TV & serier 00'erne
     categories["📺 TV & serier 00'erne"] = [
       {
         q: "Hvad hedder hovedpersonen i 'Gilmore Girls'?",
@@ -106,7 +118,6 @@
       }
     ];
 
-    // 🍷 Vin & venindehygge
     categories["🍷 Vin & venindehygge"] = [
       {
         q: "Hvad hedder den klassiske franske rødvin lavet på druen Pinot Noir?",
@@ -125,9 +136,9 @@
       }
     ];
 
-    // Quiz funktionalitet
     let currentCategory = null;
     let currentQuestionIndex = 0;
+    let userAnswers = [];
 
     function showCategories() {
       const catDiv = document.getElementById("categoryButtons");
@@ -143,6 +154,7 @@
     function startCategory(cat) {
       currentCategory = categories[cat];
       currentQuestionIndex = 0;
+      userAnswers = [];
       document.getElementById("categoryButtons").style.display = "none";
       document.getElementById("questionContainer").style.display = "block";
       showQuestion();
@@ -156,22 +168,19 @@
       q.a.forEach((ans, index) => {
         const btn = document.createElement("button");
         btn.textContent = ans;
-        btn.onclick = () => checkAnswer(index);
+        btn.onclick = () => selectAnswer(index);
         answersDiv.appendChild(btn);
       });
-      document.getElementById("resultText").textContent = "";
+      document.getElementById("nextButton").style.display = "none";
     }
 
-    function checkAnswer(index) {
-      const correct = currentCategory[currentQuestionIndex].correct;
-      const resultText = document.getElementById("resultText");
-      if (index === correct) {
-        resultText.textContent = "🎉 Korrekt!";
-        resultText.style.color = "green";
-      } else {
-        resultText.textContent = "❌ Forkert! Prøv igen!";
-        resultText.style.color = "red";
-      }
+    function selectAnswer(index) {
+      const q = currentCategory[currentQuestionIndex];
+      userAnswers.push({ question: q.q, selected: index, correct: q.correct, options: q.a });
+
+      const btns = document.querySelectorAll("#answerButtons button");
+      btns.forEach(btn => btn.disabled = true);
+      document.getElementById("nextButton").style.display = "block";
     }
 
     function nextQuestion() {
@@ -179,10 +188,34 @@
       if (currentQuestionIndex < currentCategory.length) {
         showQuestion();
       } else {
-        document.getElementById("questionText").textContent = "👏 Du er færdig med denne kategori!";
-        document.getElementById("answerButtons").innerHTML = "";
-        document.getElementById("resultText").textContent = "";
+        showSummary();
       }
+    }
+
+    function showSummary() {
+      document.getElementById("questionContainer").style.display = "none";
+      const summary = document.getElementById("summaryContent");
+      summary.innerHTML = "";
+      let correctCount = 0;
+
+      userAnswers.forEach((item, index) => {
+        const isCorrect = item.selected === item.correct;
+        if (isCorrect) correctCount++;
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <p><strong>Spørgsmål ${index + 1}:</strong> ${item.question}</p>
+          <p>Dit svar: <span class="${isCorrect ? 'correct' : 'incorrect'}">${item.options[item.selected] ?? "Intet valgt"}</span></p>
+          ${!isCorrect ? `<p>Rigtigt svar: <span class="correct">${item.options[item.correct]}</span></p>` : ""}
+          <hr>
+        `;
+        summary.appendChild(div);
+      });
+
+      const score = document.createElement("p");
+      score.innerHTML = `<strong>Du svarede rigtigt på ${correctCount} ud af ${userAnswers.length} spørgsmål 🎉</strong>`;
+      summary.prepend(score);
+
+      document.getElementById("summaryContainer").style.display = "block";
     }
 
     // Start app
