@@ -3,360 +3,192 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Amarmino-Girls Quiz</title>
+  <title>Amarmino-Girls Quiz 💅✨</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #fff0f5;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
       margin: 0;
-      padding: 2rem;
+      background: linear-gradient(to bottom, #ffe6f0, #fff0f5);
       color: #333;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+
     h1, h2 {
-      color: #c71585;
+      text-align: center;
+      color: #d63384;
     }
+
+    .category-btn, .nav-btn, .submit-btn {
+      background: #ffb3d9;
+      color: #fff;
+      border: none;
+      padding: 1rem;
+      border-radius: 2rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .question-container, .result-screen {
+      max-width: 500px;
+      width: 100%;
+      background: #fff0f5;
+      padding: 1rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 1rem 0;
+    }
+
+    .answers label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+
     .hidden {
       display: none;
     }
-    .question {
-      margin-bottom: 1.5rem;
-    }
-    button {
-      background-color: #c71585;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-    button:hover {
-      background-color: #a3126c;
-    }
-    .answer {
-      display: block;
-      margin: 0.25rem 0;
-    }
-    .correct {
-      color: green;
-    }
-    .incorrect {
-      color: red;
+
+    @media (max-width: 600px) {
+      .category-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
-
-  <h1>Amarmino-Girls Quiz</h1>
-
-  <div id="start-screen">
+  <h1>💖 Amarmino-Girls Quiz 💖</h1>
+  <div id="category-selection">
     <h2>Vælg en kategori:</h2>
-    <div id="category-buttons"></div>
+    <button class="category-btn" onclick="startQuiz('mode')">👗 Mode</button>
+    <button class="category-btn" onclick="startQuiz('vinmad')">🍷 Vin & Mad</button>
+    <button class="category-btn" onclick="startQuiz('spice')">👯 Spice Girls</button>
+    <button class="category-btn" onclick="startQuiz('musik')">🎶 Musik fra 90’erne</button>
+    <button class="category-btn" onclick="startQuiz('tv')">📺 TV & Serier fra 00’erne</button>
+    <button class="category-btn" onclick="startQuiz('amager')">🏝️ Amagers Historie</button>
   </div>
 
-  <div id="quiz-screen" class="hidden">
-    <h2 id="category-title"></h2>
-    <div id="questions"></div>
-    <button id="submit-quiz">Afslut quiz</button>
+  <div id="quiz-container" class="hidden">
+    <div class="question-container">
+      <h2 id="question-text"></h2>
+      <div class="answers" id="answers-container"></div>
+    </div>
+    <button class="nav-btn" onclick="prevQuestion()">⬅️ Tilbage</button>
+    <button class="nav-btn" onclick="nextQuestion()">➡️ Næste</button>
+    <button class="submit-btn hidden" onclick="submitQuiz()">🎉 Se Resultat</button>
   </div>
 
-  <div id="result-screen" class="hidden">
-    <h2>Resultat</h2>
-    <p id="score"></p>
-    <div id="answers-review"></div>
-    <button onclick="location.reload()">Start forfra</button>
-  </div>
+  <div id="result-screen" class="result-screen hidden"></div>
 
   <script>
-    const quizData = {
-      "90'er musik": [
-        {
-          question: "Hvilket år udgav Nirvana albummet 'Nevermind'?",
-          options: ["1990", "1991", "1992", "1993"],
-          answer: "1991"
-        },
-        {
-          question: "Hvilken dansk artist brød igennem med 'On Adventure' i 90’erne?",
-          options: ["Cut'N'Move", "Whigfield", "Aqua", "Me & My"],
-          answer: "Cut'N'Move"
-        },
-        {
-          question: "Hvilken sang af Whitney Houston blev et kæmpehit i 1992?",
-          options: ["I Have Nothing", "I'm Every Woman", "I Will Always Love You", "My Love Is Your Love"],
-          answer: "I Will Always Love You"
-        },
-        {
-          question: "Hvilket band stod bag sangen 'No Rain'?",
-          options: ["Blind Melon", "Radiohead", "Pearl Jam", "Oasis"],
-          answer: "Blind Melon"
-        },
-        {
-          question: "Hvem sang 'Bitch' i 1997?",
-          options: ["Fiona Apple", "Sheryl Crow", "Meredith Brooks", "Alanis Morissette"],
-          answer: "Meredith Brooks"
-        },
-        {
-          question: "Hvilket popband havde et hit med 'MMMBop'?",
-          options: ["Hanson", "Backstreet Boys", "NSYNC", "Take That"],
-          answer: "Hanson"
-        },
-        {
-          question: "Hvem sang 'Waterfalls'?",
-          options: ["SWV", "TLC", "Destiny's Child", "En Vogue"],
-          answer: "TLC"
-        },
-        {
-          question: "Hvilket band udgav 'Californication' i 1999?",
-          options: ["Green Day", "Red Hot Chili Peppers", "Foo Fighters", "Blur"],
-          answer: "Red Hot Chili Peppers"
-        },
-        {
-          question: "Hvem var kendt som frontmand i bandet Oasis?",
-          options: ["Noel Gallagher", "Liam Gallagher", "Damon Albarn", "Thom Yorke"],
-          answer: "Liam Gallagher"
-        },
-        {
-          question: "Hvad hed sangen af Britney Spears, der udkom i 1998?",
-          options: ["Stronger", "...Baby One More Time", "Toxic", "Lucky"],
-          answer: "...Baby One More Time"
-        }
+    const questions = {
+      mode: [
+        { question: "Hvilket mærke er kendt for den lille sorte kjole?", answers: ["Gucci", "Chanel", "Versace", "Prada"], correct: 1 },
+        { question: "Hvilket årti blev skinny jeans populære?", answers: ["1990'erne", "2000'erne", "2010'erne", "1980'erne"], correct: 1 },
+        // +8 spørgsmål ...
       ],
-      "Spice Girls": [
-        {
-          question: "Hvad var Mel B’s Spice-navn?",
-          options: ["Posh Spice", "Scary Spice", "Sporty Spice", "Baby Spice"],
-          answer: "Scary Spice"
-        },
-        {
-          question: "Hvilket år udgav Spice Girls deres debutalbum?",
-          options: ["1994", "1995", "1996", "1997"],
-          answer: "1996"
-        },
-        {
-          question: "Hvad hed Spice Girls' første single?",
-          options: ["Spice Up Your Life", "Wannabe", "Say You'll Be There", "2 Become 1"],
-          answer: "Wannabe"
-        },
-        {
-          question: "Hvem forlod gruppen i 1998?",
-          options: ["Geri Halliwell", "Mel B", "Emma Bunton", "Mel C"],
-          answer: "Geri Halliwell"
-        },
-        {
-          question: "Hvilket af disse er en Spice Girls-film?",
-          options: ["Spice Trip", "Girl Power", "Spice World", "Spice Tour"],
-          answer: "Spice World"
-        },
-        {
-          question: "Hvad var Victoria Beckhams navn i gruppen?",
-          options: ["Sporty Spice", "Baby Spice", "Scary Spice", "Posh Spice"],
-          answer: "Posh Spice"
-        },
-        {
-          question: "Hvilket år blev Spice Girls gendannet til en verdensturné?",
-          options: ["2006", "2007", "2008", "2009"],
-          answer: "2007"
-        },
-        {
-          question: "Hvad hedder Mel C’s solo-hit fra 2000 sammen med Bryan Adams?",
-          options: ["Never Be the Same Again", "Baby When You're Gone", "When You're Gone", "Northern Star"],
-          answer: "When You're Gone"
-        },
-        {
-          question: "Hvilken sang var IKKE en Spice Girls single?",
-          options: ["Viva Forever", "Stop", "Holler", "Love Me Like You Do"],
-          answer: "Love Me Like You Do"
-        },
-        {
-          question: "Hvor mange albums udgav gruppen sammen før de første gang gik i opløsning?",
-          options: ["1", "2", "3", "4"],
-          answer: "3"
-        }
+      vinmad: [
+        { question: "Hvilken vin passer bedst til oksekød?", answers: ["Riesling", "Chardonnay", "Cabernet Sauvignon", "Sauvignon Blanc"], correct: 2 },
+        { question: "Hvad er hovedingrediensen i risotto?", answers: ["Pasta", "Ris", "Bønner", "Kartofler"], correct: 1 },
+        // +8 spørgsmål ...
       ],
-      "TV & serier fra 00'erne": [
-        {
-          question: "Hvilken karakter i 'Friends' sagde ofte 'How you doin’?'",
-          options: ["Ross", "Joey", "Chandler", "Gunther"],
-          answer: "Joey"
-        },
-        {
-          question: "Hvad hed vampyrserien med Sarah Michelle Gellar?",
-          options: ["True Blood", "Buffy", "Charmed", "Angel"],
-          answer: "Buffy"
-        },
-        {
-          question: "Hvad hedder den fiktive by i 'Desperate Housewives'?",
-          options: ["Pleasant Street", "Mystic Falls", "Wisteria Lane", "Cherry Hill"],
-          answer: "Wisteria Lane"
-        },
-        {
-          question: "Hvilken serie gjorde Jennifer Garner kendt som hemmelig agent?",
-          options: ["Alias", "24", "Covert Affairs", "Homeland"],
-          answer: "Alias"
-        },
-        {
-          question: "Hvad hedder hovedpersonen i 'Gilmore Girls'?",
-          options: ["Rory", "Emily", "Lorelei", "Sookie"],
-          answer: "Lorelei"
-        },
-        {
-          question: "I 'Sex and the City', hvad hedder Carries største kærlighed?",
-          options: ["Steve", "Aidan", "Big", "Trey"],
-          answer: "Big"
-        },
-        {
-          question: "Hvilken krimiserie foregår i Las Vegas og blev en kæmpe succes?",
-          options: ["NCIS", "CSI", "Bones", "Criminal Minds"],
-          answer: "CSI"
-        },
-        {
-          question: "Hvem spillede hovedrollen i 'The O.C.' som Ryan?",
-          options: ["Ben McKenzie", "Adam Brody", "Chad Michael Murray", "Jared Padalecki"],
-          answer: "Ben McKenzie"
-        },
-        {
-          question: "Hvad var navnet på den talende kat i 'Sabrina the Teenage Witch'?",
-          options: ["Shadow", "Salem", "Socrates", "Simba"],
-          answer: "Salem"
-        },
-        {
-          question: "Hvad hedder tvillingesøstrene i 'Charmed'?",
-          options: ["Phoebe og Prue", "Paige og Piper", "Piper og Phoebe", "Paige og Penny"],
-          answer: "Piper og Phoebe"
-        }
+      spice: [
+        { question: "Hvad hed Scary Spice rigtigt?", answers: ["Mel C", "Mel B", "Geri", "Emma"], correct: 1 },
+        { question: "Hvilket år udgav Spice Girls 'Wannabe'?", answers: ["1994", "1996", "1999", "1992"], correct: 1 },
+        // +8 spørgsmål ...
       ],
-      "Vin & pigehygge": [
-        {
-          question: "Hvad kaldes vin lavet på Pinot Noir-druen typisk?",
-          options: ["Let og frugtig", "Tung og krydret", "Sød og muskuløs", "Sur og syrlig"],
-          answer: "Let og frugtig"
-        },
-        {
-          question: "Hvilket land er kendt for rødvinen Barolo?",
-          options: ["Frankrig", "Spanien", "Italien", "Argentina"],
-          answer: "Italien"
-        },
-        {
-          question: "Hvad drikker man ofte til en pigemiddag med tapas?",
-          options: ["Portvin", "Riesling", "Rosé", "Barolo"],
-          answer: "Rosé"
-        },
-        {
-          question: "Hvilken vin er typisk sødest: Chardonnay, Riesling, Sauvignon Blanc, eller Pinot Grigio?",
-          options: ["Riesling", "Chardonnay", "Sauvignon Blanc", "Pinot Grigio"],
-          answer: "Riesling"
-        },
-        {
-          question: "Hvad kaldes det franske vinområde kendt for Champagne?",
-          options: ["Bordeaux", "Champagne", "Bourgogne", "Alsace"],
-          answer: "Champagne"
-        },
-        {
-          question: "Hvad kalder man det, når man mødes og nyder vin og snak?",
-          options: ["Wine talk", "Girls & grapes", "Vin & veninder", "Vinsnak"],
-          answer: "Vin & veninder"
-        },
-        {
-          question: "Hvad betyder 'Brut' på en champagneflaske?",
-          options: ["Sød", "Meget tør", "Halvtør", "Frugtig"],
-          answer: "Meget tør"
-        },
-        {
-          question: "Hvad hedder drinken med prosecco og ferskenpuré?",
-          options: ["Bellini", "Mimosa", "Kir Royale", "Spritz"],
-          answer: "Bellini"
-        },
-        {
-          question: "Hvilken ost passer godt til rødvin?",
-          options: ["Feta", "Gouda", "Brie", "Roquefort"],
-          answer: "Brie"
-        },
-        {
-          question: "Hvad hedder det italienske udtryk for en hyggelig sammenkomst med vin og mad?",
-          options: ["Fiesta", "Siesta", "Aperitivo", "Taverna"],
-          answer: "Aperitivo"
-        }
+      musik: [
+        { question: "Hvem sang '...Baby One More Time'?", answers: ["Christina Aguilera", "Britney Spears", "Madonna", "Pink"], correct: 1 },
+        { question: "Hvilket boyband sang 'I Want It That Way'?", answers: ["*NSYNC", "Westlife", "Backstreet Boys", "Take That"], correct: 2 },
+        // +8 spørgsmål ...
+      ],
+      tv: [
+        { question: "Hvad hedder hovedpersonen i 'Gilmore Girls'?", answers: ["Rachel", "Lorelai", "Phoebe", "Angela"], correct: 1 },
+        { question: "Hvilken dansk serie fra 00’erne hedder 'Rejseholdet' på engelsk?", answers: ["The Killing", "The Investigation", "Unit One", "Borgen"], correct: 2 },
+        // +8 spørgsmål ...
+      ],
+      amager: [
+        { question: "Hvad hedder hovedstrøget på Amager?", answers: ["Nørrebrogade", "Vesterbrogade", "Amagerbrogade", "Østerbrogade"], correct: 2 },
+        { question: "Hvilken ø ligger syd for Amager?", answers: ["Lolland", "Saltholm", "Fyn", "Bornholm"], correct: 1 },
+        // +8 spørgsmål ...
       ]
     };
 
-    let currentCategory = "";
+    let currentCategory = '';
+    let currentIndex = 0;
     let userAnswers = [];
-
-    function showCategories() {
-      const container = document.getElementById("category-buttons");
-      for (let category in quizData) {
-        const btn = document.createElement("button");
-        btn.textContent = category;
-        btn.onclick = () => startQuiz(category);
-        container.appendChild(btn);
-      }
-    }
 
     function startQuiz(category) {
       currentCategory = category;
-      document.getElementById("start-screen").classList.add("hidden");
-      document.getElementById("quiz-screen").classList.remove("hidden");
-      document.getElementById("category-title").textContent = category;
-
-      const questions = quizData[category];
-      const container = document.getElementById("questions");
-      container.innerHTML = "";
-
-      questions.forEach((q, index) => {
-        const div = document.createElement("div");
-        div.className = "question";
-        div.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
-        q.options.forEach(opt => {
-          const id = `q${index}_${opt}`;
-          div.innerHTML += `
-            <label class="answer">
-              <input type="radio" name="q${index}" value="${opt}" id="${id}"> ${opt}
-            </label>`;
-        });
-        container.appendChild(div);
-      });
+      currentIndex = 0;
+      userAnswers = new Array(10).fill(null);
+      document.getElementById("category-selection").classList.add("hidden");
+      document.getElementById("quiz-container").classList.remove("hidden");
+      showQuestion();
     }
 
-    document.getElementById("submit-quiz").onclick = () => {
-      const questions = quizData[currentCategory];
-      userAnswers = [];
+    function showQuestion() {
+      const q = questions[currentCategory][currentIndex];
+      document.getElementById("question-text").innerText = `Spørgsmål ${currentIndex + 1}: ${q.question}`;
+      const answersHTML = q.answers.map((a, i) => `
+        <label>
+          <input type="radio" name="answer" value="${i}" ${userAnswers[currentIndex] === i ? 'checked' : ''}/> ${a}
+        </label>
+      `).join('');
+      document.getElementById("answers-container").innerHTML = answersHTML;
 
-      for (let i = 0; i < questions.length; i++) {
-        const radios = document.getElementsByName("q" + i);
-        let answered = false;
-        for (let radio of radios) {
-          if (radio.checked) {
-            userAnswers.push(radio.value);
-            answered = true;
-            break;
-          }
-        }
-        if (!answered) userAnswers.push(null);
+      document.querySelector('.submit-btn').classList.toggle('hidden', currentIndex !== 9);
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      if (currentIndex < 9) {
+        currentIndex++;
+        showQuestion();
       }
+    }
 
-      document.getElementById("quiz-screen").classList.add("hidden");
-      document.getElementById("result-screen").classList.remove("hidden");
+    function prevQuestion() {
+      saveAnswer();
+      if (currentIndex > 0) {
+        currentIndex--;
+        showQuestion();
+      }
+    }
 
-      let correct = 0;
-      const answersDiv = document.getElementById("answers-review");
-      answersDiv.innerHTML = "";
+    function saveAnswer() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (selected) {
+        userAnswers[currentIndex] = parseInt(selected.value);
+      }
+    }
 
-      questions.forEach((q, i) => {
-        const isCorrect = userAnswers[i] === q.answer;
-        if (isCorrect) correct++;
-        const div = document.createElement("div");
-        div.className = isCorrect ? "correct" : "incorrect";
-        div.innerHTML = `
-          <strong>${i + 1}. ${q.question}</strong><br/>
-          Dit svar: ${userAnswers[i] || "<i>Intet svar</i>"}<br/>
-          Korrekt svar: ${q.answer}<br/>
-        `;
-        answersDiv.appendChild(div);
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      questions[currentCategory].forEach((q, i) => {
+        if (userAnswers[i] === q.correct) score++;
       });
 
-      document.getElementById("score").textContent = `Du fik ${correct} ud af ${questions.length} rigtige.`;
-    };
+      let resultText = "";
+      if (score <= 3) resultText = "😅 Amagerbrogades Amatør";
+      else if (score <= 6) resultText = "💁 Islands Brygge Babe";
+      else if (score <= 9) resultText = "👑 Kastrup Queen";
+      else resultText = "🎉 Ultimate Amar Diva 💅";
 
-    showCategories();
+      document.getElementById("quiz-container").classList.add("hidden");
+      const resultDiv = document.getElementById("result-screen");
+      resultDiv.classList.remove("hidden");
+      resultDiv.innerHTML = `
+        <h2>Resultat</h2>
+        <p>Du fik <strong>${score}/10</strong> rigtige!</p>
+        <h3>${resultText}</h3>
+        <button class="category-btn" onclick="location.reload()">🔁 Prøv igen</button>
+      `;
+    }
   </script>
 </body>
 </html>
