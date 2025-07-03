@@ -85,37 +85,79 @@
 
   <script>
     const questions = {
-      mode: [
-        { question: "Hvilket mærke er kendt for den lille sorte kjole?", answers: ["Gucci", "Chanel", "Versace", "Prada"], correct: 1 },
-        { question: "Hvilket årti blev skinny jeans populære?", answers: ["1990'erne", "2000'erne", "2010'erne", "1980'erne"], correct: 1 },
-        // +8 spørgsmål ...
-      ],
-      vinmad: [
-        { question: "Hvilken vin passer bedst til oksekød?", answers: ["Riesling", "Chardonnay", "Cabernet Sauvignon", "Sauvignon Blanc"], correct: 2 },
-        { question: "Hvad er hovedingrediensen i risotto?", answers: ["Pasta", "Ris", "Bønner", "Kartofler"], correct: 1 },
-        // +8 spørgsmål ...
-      ],
-      spice: [
-        { question: "Hvad hed Scary Spice rigtigt?", answers: ["Mel C", "Mel B", "Geri", "Emma"], correct: 1 },
-        { question: "Hvilket år udgav Spice Girls 'Wannabe'?", answers: ["1994", "1996", "1999", "1992"], correct: 1 },
-        // +8 spørgsmål ...
-      ],
-      musik: [
-        { question: "Hvem sang '...Baby One More Time'?", answers: ["Christina Aguilera", "Britney Spears", "Madonna", "Pink"], correct: 1 },
-        { question: "Hvilket boyband sang 'I Want It That Way'?", answers: ["*NSYNC", "Westlife", "Backstreet Boys", "Take That"], correct: 2 },
-        // +8 spørgsmål ...
-      ],
-      tv: [
-        { question: "Hvad hedder hovedpersonen i 'Gilmore Girls'?", answers: ["Rachel", "Lorelai", "Phoebe", "Angela"], correct: 1 },
-        { question: "Hvilken dansk serie fra 00’erne hedder 'Rejseholdet' på engelsk?", answers: ["The Killing", "The Investigation", "Unit One", "Borgen"], correct: 2 },
-        // +8 spørgsmål ...
-      ],
-      amager: [
-        { question: "Hvad hedder hovedstrøget på Amager?", answers: ["Nørrebrogade", "Vesterbrogade", "Amagerbrogade", "Østerbrogade"], correct: 2 },
-        { question: "Hvilken ø ligger syd for Amager?", answers: ["Lolland", "Saltholm", "Fyn", "Bornholm"], correct: 1 },
-        // +8 spørgsmål ...
-      ]
-    };
+  mode: [
+    { question: "Hvilket mærke er kendt for den lille sorte kjole?", answers: ["Gucci", "Chanel", "Versace", "Prada"], correct: 1 },
+    { question: "Hvem var chefdesigner for Dior i 1990’erne?", answers: ["Karl Lagerfeld", "John Galliano", "Tom Ford", "Yves Saint Laurent"], correct: 1 },
+    { question: "Hvad kalder man sko med røde såler?", answers: ["Jimmy Choo", "Christian Louboutin", "Manolo Blahnik", "Valentino"], correct: 1 },
+    { question: "Hvilket modemagasin blev grundlagt i 1892?", answers: ["Elle", "Cosmopolitan", "Vogue", "Harper's Bazaar"], correct: 2 },
+    { question: "Hvilket land er kendt for haute couture?", answers: ["Italien", "Frankrig", "USA", "Spanien"], correct: 1 },
+    { question: "Hvilket materiale er Burberrys ikoniske trenchcoat lavet af?", answers: ["Bomuld", "Silke", "Uld", "Læder"], correct: 0 },
+    { question: "Hvilken model blev kendt som 'The Body'?", answers: ["Naomi Campbell", "Cindy Crawford", "Heidi Klum", "Elle Macpherson"], correct: 3 },
+    { question: "Hvad står H&M for?", answers: ["Hansen & Meyer", "Hennes & Mauritz", "House & Market", "Hud & Mode"], correct: 1 },
+    { question: "Hvilket årti dominerede shoulder pads?", answers: ["1960’erne", "1970’erne", "1980’erne", "1990’erne"], correct: 2 },
+    { question: "Hvilken farve forbindes oftest med Valentino?", answers: ["Sort", "Rød", "Guld", "Pink"], correct: 1 }
+  ],
+  vinmad: [
+    { question: "Hvad er hovedingrediensen i tzatziki?", answers: ["Tomat", "Yoghurt", "Fløde", "Smør"], correct: 1 },
+    { question: "Hvilket land stammer Chianti-vinen fra?", answers: ["Frankrig", "Italien", "Spanien", "Portugal"], correct: 1 },
+    { question: "Hvilken vin passer bedst til laks?", answers: ["Rødvin", "Portvin", "Rosé", "Hvidvin"], correct: 3 },
+    { question: "Hvad betyder 'al dente'?", answers: ["Overkogt", "Sprødt", "Til tanden", "Saltet"], correct: 2 },
+    { question: "Hvilken ost bruges i klassisk Tiramisu?", answers: ["Feta", "Mascarpone", "Mozzarella", "Ricotta"], correct: 1 },
+    { question: "Hvad er foie gras lavet af?", answers: ["Ande- eller gåselever", "Oksehjerte", "Gedeost", "Torskelever"], correct: 0 },
+    { question: "Hvilken slags vin er en Bordeaux?", answers: ["Rød", "Hvid", "Mousserende", "Portvin"], correct: 0 },
+    { question: "Hvad drikker man typisk til sushi i Japan?", answers: ["Sake", "Whisky", "Vodka", "Vin"], correct: 0 },
+    { question: "Hvad kaldes det italienske måltid bestående af småretter?", answers: ["Tortilla", "Tapas", "Antipasti", "Ravioli"], correct: 2 },
+    { question: "Hvilken dansk restaurant har fået tre Michelin-stjerner?", answers: ["Noma", "Geranium", "Kadeau", "Alchemist"], correct: 1 }
+  ],
+  spice: [
+    { question: "Hvilket år blev Spice Girls dannet?", answers: ["1993", "1994", "1995", "1996"], correct: 2 },
+    { question: "Hvad hed deres første album?", answers: ["Spice Up Your Life", "Spicy", "Spice", "Girl Power"], correct: 2 },
+    { question: "Hvem forlod gruppen først?", answers: ["Mel B", "Geri", "Victoria", "Emma"], correct: 1 },
+    { question: "Hvad hed Geri Halliwell’s solo-debut single?", answers: ["Look at Me", "Mi Chico Latino", "Bag It Up", "It’s Raining Men"], correct: 0 },
+    { question: "Hvem var Baby Spice?", answers: ["Mel C", "Emma Bunton", "Mel B", "Geri Halliwell"], correct: 1 },
+    { question: "Hvad betyder 'zig-a-zig-ah' fra sangen 'Wannabe'?", answers: ["Penge", "Ingen betydning", "Sex", "Slang for fest"], correct: 1 },
+    { question: "Hvilken sang indeholder teksten 'If you wanna be my lover...'?", answers: ["2 Become 1", "Say You'll Be There", "Spice Up Your Life", "Wannabe"], correct: 3 },
+    { question: "Hvem var Posh Spice?", answers: ["Mel C", "Victoria Beckham", "Geri", "Emma"], correct: 1 },
+    { question: "Hvor mange albums udgav de før 2000?", answers: ["1", "2", "3", "4"], correct: 2 },
+    { question: "Hvilket medlem blev kendt som Sporty Spice?", answers: ["Mel C", "Mel B", "Emma", "Geri"], correct: 0 }
+  ],
+  musik: [
+    { question: "Hvem sang 'No Scrubs'?", answers: ["Destiny's Child", "TLC", "Brandy", "Monica"], correct: 1 },
+    { question: "Hvad var navnet på Britney Spears’ debutalbum?", answers: ["Oops!...", "...Baby One More Time", "Circus", "Britney"], correct: 1 },
+    { question: "Hvilket band havde et hit med 'Creep' i 90’erne?", answers: ["Blur", "Radiohead", "Oasis", "The Verve"], correct: 1 },
+    { question: "Hvem var kendt som 'The Queen of Hip-Hop Soul'?", answers: ["Mary J. Blige", "Lauryn Hill", "Missy Elliott", "Aaliyah"], correct: 0 },
+    { question: "Hvilken gruppe sang 'Waterfalls'?", answers: ["TLC", "All Saints", "Salt-N-Pepa", "Spice Girls"], correct: 0 },
+    { question: "Hvilken sang af Whitney Houston var en del af filmen 'The Bodyguard'?", answers: ["I Have Nothing", "Greatest Love", "I Will Always Love You", "Run to You"], correct: 2 },
+    { question: "Hvilket årti debuterede Destiny’s Child?", answers: ["1980'erne", "1990’erne", "2000’erne", "2010’erne"], correct: 1 },
+    { question: "Hvad hed sangeren bag 'Angels' fra 1997?", answers: ["George Michael", "Robbie Williams", "Elton John", "Seal"], correct: 1 },
+    { question: "Hvem sang 'Torn'?", answers: ["Alanis Morissette", "Natalie Imbruglia", "Dido", "Sheryl Crow"], correct: 1 },
+    { question: "Hvad hed albummet med Nirvanas 'Smells Like Teen Spirit'?", answers: ["Nevermind", "In Utero", "Bleach", "Unplugged"], correct: 0 }
+  ],
+  tv: [
+    { question: "Hvad hedder hovedpersonerne i 'The O.C.'?", answers: ["Ryan & Summer", "Seth & Marissa", "Ryan & Marissa", "Seth & Summer"], correct: 2 },
+    { question: "Hvad hedder kliken i 'Gossip Girl'?", answers: ["The Elites", "The Upper East Side", "The Fab Five", "The Plastics"], correct: 1 },
+    { question: "Hvilken serie havde karaktererne Lorelai og Rory?", answers: ["Dawson's Creek", "Gilmore Girls", "One Tree Hill", "Veronica Mars"], correct: 1 },
+    { question: "I hvilken serie finder man karakteren Carrie Bradshaw?", answers: ["Desperate Housewives", "Sex and the City", "Friends", "The L Word"], correct: 1 },
+    { question: "Hvad hed den danske ungdomsserie om et kollektiv?", answers: ["Borgen", "Sommer", "2900 Happiness", "Langt fra Las Vegas"], correct: 2 },
+    { question: "Hvad hedder vampyrserien med Buffy?", answers: ["The Vampire Diaries", "Buffy the Vampire Slayer", "Angel", "True Blood"], correct: 1 },
+    { question: "Hvad hedder byen i 'Desperate Housewives'?", answers: ["Fairview", "Wisteria Lane", "Pleasantville", "Stepford"], correct: 1 },
+    { question: "Hvad er navnet på karakteren spillet af Sarah Jessica Parker?", answers: ["Miranda", "Charlotte", "Carrie", "Samantha"], correct: 2 },
+    { question: "I hvilken serie spiller Mads Mikkelsen politi?", answers: ["Forbrydelsen", "Rejseholdet", "Borgen", "Broen"], correct: 1 },
+    { question: "Hvilket dansk realityshow startede i 2001?", answers: ["Robinson Ekspeditionen", "Big Brother", "Paradise Hotel", "X Factor"], correct: 1 }
+  ],
+  amager: [
+    { question: "Hvornår åbnede Amager Strandpark (nye del)?", answers: ["1990", "2005", "1999", "2010"], correct: 1 },
+    { question: "Hvad hedder metrostationen tættest på DR Byen?", answers: ["Sundby", "DR Byen", "Amagerbro", "Ørestad"], correct: 1 },
+    { question: "Hvilket universitet ligger på Amager?", answers: ["DTU", "CBS", "KU", "RUC"], correct: 2 },
+    { question: "Hvilket år blev Amager Bakke åbnet?", answers: ["2017", "2019", "2015", "2020"], correct: 1 },
+    { question: "Hvilket kendt vandland lå på Amager?", answers: ["Lalandia", "Københavns Badeland", "Aqua Amager", "Amager Tropeland"], correct: 3 },
+    { question: "Hvilken bydel ligger Islands Brygge i?", answers: ["Amager Øst", "Indre By", "Amager Vest", "Nørrebro"], correct: 2 },
+    { question: "Hvad kaldes den gamle landsby midt på Amager?", answers: ["Tårnby", "Kastrup", "Dragør", "Sundbyvester"], correct: 0 },
+    { question: "Hvilket museum ligger tæt på Kastrup?", answers: ["Den Blå Planet", "Statens Museum", "Louisiana", "Experimentarium"], correct: 0 },
+    { question: "Hvad hedder hovedgaden på Amager?", answers: ["Amager Boulevard", "Amagerbrogade", "Strandlodsvej", "Sundholmsvej"], correct: 1 },
+    { question: "Hvad er 'Ama'r Halshug' en reference til?", answers: ["En sportsbegivenhed", "En heavy metal-band", "En graffiti-gruppe", "En fodboldklub"], correct: 1 }
+  ]
+};
 
     let currentCategory = '';
     let currentIndex = 0;
